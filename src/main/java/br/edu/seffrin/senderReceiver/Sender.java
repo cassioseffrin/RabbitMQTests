@@ -39,7 +39,7 @@ public class Sender {
 			for (int i = 0; i < 10; i++) {
 				String message = "Teste do Java " + i;
 				channel.basicPublish("", QUEUE, null, message.getBytes("UTF-8"));
-				System.out.println(" [x] " + QUEUE + " Enviada '" + message + "'");
+				System.out.println(" [x] FILA: " + QUEUE + " Enviada '" + message + "'");
 			}
 			channel.close();
 			conn.close();

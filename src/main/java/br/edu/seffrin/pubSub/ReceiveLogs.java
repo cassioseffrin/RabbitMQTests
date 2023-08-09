@@ -32,7 +32,7 @@ public class ReceiveLogs {
 		String queueName = channel.queueDeclare().getQueue();
 		channel.queueBind(queueName, EXCHANGE_NAME, "");
 
-		System.out.println(" [*] Aguardando... CTRL+C para cancelar");
+		System.out.println(" [*] Aguardando... CTRL+C para sair");
 
 		DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 			String message = new String(delivery.getBody(), "UTF-8");

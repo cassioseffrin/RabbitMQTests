@@ -28,11 +28,10 @@ public class Reciever {
 		Channel channel = conn.createChannel();
 
 		channel.queueDeclare(QUEUE, true, false, false, null);
-		System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-
+		System.out.println(" [*] " + QUEUE + " Aguardando Mensagens. CTRL+C para sair");
 		DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 			String message = new String(delivery.getBody(), "UTF-8");
-			System.out.println(" [x] Recebida '" + message + "'");
+			System.out.println(" [x]  " + QUEUE + " Recebida '" + message + "'");
 		};
 
 		channel.basicConsume(QUEUE, true, deliverCallback, consumerTag -> {

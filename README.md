@@ -5,3 +5,6 @@ testes
 
 ![image](https://github.com/cassioseffrin/RabbitMQTests/assets/13109831/1ab44e06-fd47-43c9-964a-7fc856067374)
 
+exemplo android:
+https://github.com/cloudamqp/android-example/tree/main
+

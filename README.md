@@ -1,6 +1,7 @@
-testes 
+Rabbit MQ - Testes com Java 
 
 
+Simulador: https://tryrabbitmq.com/
 
 Producer: Aplicativo que envia as mensagens.
 Consumer: Aplicativo que recebe as mensagens.

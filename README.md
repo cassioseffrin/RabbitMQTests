@@ -15,12 +15,13 @@ Routing key: a chave de roteamento é uma chave que a troca analisa para decidir
 
 
 O Producer envia/publica as mensagens para o broker -> Os consumers recebem as mensagens do broker. O RabbitMQ atua como um middleware de comunicação entre produtores e consumidores, mesmo que sejam executados em máquinas diferentes.
+
 O componente Exchange no RabbitMQ é responsável por rotear as mensagens para diferentes filas. O Exchange usa a chave de roteamento para rotear as mensagens para as respectivas filas.
 ![image](https://github.com/cassioseffrin/RabbitMQTests/assets/13109831/0b65a097-b083-406a-b058-2113c81dfbac)
 
 
 Enviar mensagem para várias filas
-Por ter uma aplicação mais complexa teríamos várias filas. Portanto, as mensagens serão enviadas em várias filas.
+Exemplo de uma aplicação mais complexa com várias filas:
 ![image](https://github.com/cassioseffrin/RabbitMQTests/assets/13109831/1ab44e06-fd47-43c9-964a-7fc856067374)
 
 

@@ -36,8 +36,8 @@ public class Sender {
 
 			channel.queueDeclare(QUEUE, true, false, false, null);
 
-			for (int i = 0; i < 20; i++) {
-				String message = "Teste do Java " + i;
+			for (int i = 0; i < 1; i++) {
+				String message = "{ \"valor\": 3694, \"tipo\": \"credito\" }";
 				channel.basicPublish("", QUEUE, null, message.getBytes("UTF-8"));
 				System.out.println(" [x] FILA: " + QUEUE + " Enviada '" + message + "'");
 			}

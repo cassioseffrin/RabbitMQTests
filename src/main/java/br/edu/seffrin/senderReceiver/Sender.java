@@ -22,7 +22,8 @@ public class Sender {
 			String HOST = config.getString("HOST");
 			String USER = config.getString("USER");
 			String PASS = config.getString("PASS");
-			String QUEUE = config.getString("QUEUE");
+			//String QUEUE = config.getString("QUEUE");
+			String QUEUE_L300 = config.getString("QUEUE_L300");
 			Integer PORT = config.getInt("PORT");
 
 			factory.setHost(HOST);
@@ -34,12 +35,12 @@ public class Sender {
 			Connection conn = factory.newConnection();
 			Channel channel = conn.createChannel();
 
-			channel.queueDeclare(QUEUE, true, false, false, null);
+			channel.queueDeclare(QUEUE_L300, true, false, false, null);
 
 			for (int i = 0; i < 1; i++) {
-				String message = "{ \"valor\": 3694, \"tipo\": \"credito\" }";
-				channel.basicPublish("", QUEUE, null, message.getBytes("UTF-8"));
-				System.out.println(" [x] FILA: " + QUEUE + " Enviada '" + message + "'");
+				String message = "{ \"operacao\": \"PAGAMENTO\", \"valor\": 8088, \"tipo\": \"credito\" }";
+				channel.basicPublish("", QUEUE_L300, null, message.getBytes("UTF-8"));
+				System.out.println(" [x] FILA: " + QUEUE_L300 + " Enviada '" + message + "'");
 			}
 			channel.close();
 			conn.close();

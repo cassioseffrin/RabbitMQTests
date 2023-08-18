@@ -38,9 +38,9 @@ public class Sender {
 			channel.queueDeclare(QUEUE, true, false, false, null);
 
 			for (int i = 0; i < 1; i++) {
-				String message = "{ \"operacao\": \"PAGAMENTO\", \"valor\": 8088, \"tipo\": \"credito\" }";
+				String message = "{ \"operacao\": \"PAGAMENTO\", \"pedido\": 1, \"valor\": 8088, \"tipo\": \"CREDITO\" }";
 				channel.basicPublish("", QUEUE, null, message.getBytes("UTF-8"));
-				System.out.println(" [x] FILA: " + QUEUE + " Enviada '" + message + "'");
+				System.out.println("Enviada para fila: " + QUEUE + " Enviada !'" + message + "'");
 			}
 			channel.close();
 			conn.close();

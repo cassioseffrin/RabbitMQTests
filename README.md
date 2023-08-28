@@ -64,6 +64,11 @@ Então, se meu producer mandar uma mensagem com rota apache.access tanto a fila 
 <b>Headers exchange</b>
 Esse é o tipo menos comum de exchange. Este tipo ignora a rota e encaminha as mensagens usando seu cabeçalho. Então se você possui uma condição mais complexa que uma string para encaminhar a mensagem você pode fazer uso deste tipo de exchange. Ele funciona BEM mais ou menos como um if, já que é possível definir mais de um critério para encaminhamento da mensagem, e ainda possibilita o uso de hashes ou inteiros como “rotas” se houver a necessidade de usar algo mais complexo.
 
+
+
+file:///Users/programacao/dev/MensageiroMQ/src/main/resources/architecture.png![image](https://github.com/cassioseffrin/RabbitMQTests/assets/13109831/d62877c4-179a-4d08-8e75-9e04d2f79c1e)
+
+
 exemplo no android:
 https://github.com/cloudamqp/android-example/tree/main
 

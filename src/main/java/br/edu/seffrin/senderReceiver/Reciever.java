@@ -17,7 +17,8 @@ public class Reciever {
 		String USER = config.getString("USER");
 		String PASS = config.getString("PASS");
 		Integer PORT = config.getInt("PORT");
-		String QUEUE = config.getString("QUEUE");
+//		String QUEUE = config.getString("QUEUE_P2");
+		String QUEUE = config.getString("QUEUE_L300");
 		factory.setHost(HOST);
 		factory.setUsername(USER);
 		factory.setPassword(PASS);

@@ -1,4 +1,4 @@
-package br.edu.seffrin.senderReceiver;
+package br.edu.seffrin.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

@@ -3,40 +3,79 @@ package br.edu.seffrin.senderReceiver;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.lang3.SerializationUtils;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Delivery;
+import com.rabbitmq.client.DeliverCallback;
 
 public class Client {
 
 	private com.rabbitmq.client.Connection mConnection;
 	private boolean mIsConnected;
-	private String mName;
+ 
 	private Application mApp;
 
+ 
+
 	public Client(String host) {
-		initCommunication(host);
+		initCommunication();
 	}
 
-	private void initCommunication(String host) {
-		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost(host);
-		factory.setUsername("arpag");
-		factory.setPassword("@rpa@pps2022");
-		factory.setPort(5671);
+	private void initCommunication() {
+
 		try {
+
+			ConnectionFactory factory = new ConnectionFactory();
+			PropertiesConfiguration config = new PropertiesConfiguration();
+			config.load("application.properties");
+
+			String HOST = config.getString("HOST_AWS");
+			String USER = config.getString("USER_AWS");
+			String PASS = config.getString("PASS_AWS");
+			String QUEUE = config.getString("QUEUE_P2_PDV");
+//			String QUEUE = config.getString("QUEUE_L300");
+			Integer PORT = config.getInt("PORT_AWS");
+
+			factory.setHost(HOST);
+			factory.setUsername(USER);
+			factory.setPassword(PASS);
+			factory.setPort(PORT);
 			factory.useSslProtocol();
-		} catch (KeyManagementException | NoSuchAlgorithmException e) {
+
+			Connection conn = factory.newConnection();
+			Channel mChannel = conn.createChannel();
+
+			mChannel.queueDeclare(QUEUE, true, false, false, null);
+			System.out.println(" [*] Fila: " + QUEUE + " Aguardando Mensagens. CTRL+C para sair");
+			DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+				String message = new String(delivery.getBody(), "UTF-8");
+
+				System.out.println(" [x]  " + QUEUE + " Recebida '" + message + "'");
+
+				mApp.addToChat(message, Application.ATTR_PLAIN);
+
+			};
+
+			mChannel.basicConsume(QUEUE, true, deliverCallback, consumerTag -> {
+			});
+
+		} catch (TimeoutException | IOException e) {
+			System.err.println("Error: " + e);
+			System.exit(-1);
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+		} catch (KeyManagementException e) {
+ 
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+ 
 			e.printStackTrace();
 		}
 	}
@@ -47,42 +86,41 @@ public class Client {
 
 	public boolean connect(String name) {
 		mApp.addToChat("[Server]: Initiating your connection...", Application.ATTR_SERVER);
+
 		try {
-			ConnectionFactory factory = new ConnectionFactory();
-			PropertiesConfiguration config = new PropertiesConfiguration();
-			config.load("application.properties");
-			String HOST = config.getString("HOST");
-			String USER = config.getString("USER");
-			String PASS = config.getString("PASS");
-			String QUEUE = config.getString("QUEUE_L300");
-			Integer PORT = config.getInt("PORT");
-			factory.setHost(HOST);
-			factory.setUsername(USER);
-			factory.setPassword(PASS);
-			factory.setPort(PORT);
-			factory.useSslProtocol();
-			Connection conn = factory.newConnection();
-			Channel channel = conn.createChannel();
-			channel.queueDeclare(QUEUE, true, false, false, null);
-			for (int i = 0; i < 1; i++) {
-				String message = "{ \"operacao\": \"PAGAMENTO\", \"pedido\": \"A1\", \"valor\": 1002, \"tipo\": \"CREDITO\" }";
-				channel.basicPublish("", QUEUE, null, message.getBytes("UTF-8"));
-				System.out.println("Enviada para fila: " + QUEUE + " Enviada !'" + message + "'");
+			BlockingQueue<Object> response = connectRPC(name);
+
+			boolean isConnected = (boolean) response.take();
+			@SuppressWarnings("unchecked")
+			ArrayList<Message> messageHistory = (ArrayList<Message>) response.take();
+			@SuppressWarnings("unchecked")
+			ArrayList<String> connectedClients = (ArrayList<String>) response.take();
+
+			System.out.println(connectedClients);
+
+			if (!isConnected) {
+	 
+				return false;
+			} else {
+	 
+		 
+				mIsConnected = true;
+	 
+				connectedClients.forEach(client -> mApp.addToUsersList(client));
+	 
+				messageHistory.forEach(message -> {
+					mApp.addToChat("(" + message.getTime() + ") ", Application.ATTR_BOLD);
+					mApp.addToChat(message.getName() + ": ", Application.ATTR_BOLD);
+					mApp.addToChat(message.getContent(), Application.ATTR_PLAIN);
+				});
 			}
-			channel.close();
-			conn.close();
-		} catch (IOException | TimeoutException e) {
-			throw new RuntimeException("Rabbitmq erro", e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		} catch (KeyManagementException e) {
-			throw new RuntimeException(e);
 		} catch (Exception e) {
-			mApp.addToChat("[Server]: Error with the server, try again or " + "relaunch the app.",
+			mApp.addToChat("[Servidor]: Erro ao conectar",
 					Application.ATTR_ERROR);
 			return false;
 		}
-		mApp.addToChat("[Server]: You are connected as \"" + mName + "\".", Application.ATTR_SERVER);
+
+
 		return true;
 	}
 
@@ -91,68 +129,24 @@ public class Client {
 	}
 
 	public void disconnect() {
-		mApp.addToChat("[Server]: Initiating your disconnection...", Application.ATTR_SERVER);
+		mApp.addToChat("[Servidor]: desconectando...", Application.ATTR_SERVER);
 		try {
 			mIsConnected = false;
 		} catch (Exception e) {
 			mApp.addToChat(
-					"[Server]: Error, cannot completely disconnect you. "
-							+ "Your username may be unavailable until the server restarts."
-							+ "If the application seems to be not running correctly, please " + "restart it.",
+					"[Servidor]: Erro, não é possível desconectar você completamente.\n"
+					+ "Seu nome de usuário pode ficar indisponível até que o servidor seja reiniciado.\n"
+					+ "Se o aplicativo parecer não estar funcionando corretamente, por favor\n"
+					+ "reinicie-o.",
 					Application.ATTR_ERROR);
 			return;
 		}
 		mApp.clearUsersList();
 		mApp.addToChat("[Server]: Disconnection finished.", Application.ATTR_SERVER);
 	}
+ 
 
-	public void sendMessage(String message) {
-		String DATE_FORMAT = "HH:mm:ss";
-		String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT));
-		Message msg = new Message(mName, message, time);
-		try {
-			ConnectionFactory factory = new ConnectionFactory();
-			PropertiesConfiguration config = new PropertiesConfiguration();
-			config.load("application.properties");
-			String HOST = config.getString("HOST");
-			String USER = config.getString("USER");
-			String PASS = config.getString("PASS");
-			String QUEUE = config.getString("QUEUE_L300");
-			Integer PORT = config.getInt("PORT");
-			factory.setHost(HOST);
-			factory.setUsername(USER);
-			factory.setPassword(PASS);
-			factory.setPort(PORT);
-			try {
-				factory.useSslProtocol();
-			} catch (KeyManagementException | NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
-			Connection conn = factory.newConnection();
-			Channel channel = conn.createChannel();
-			channel.queueDeclare(QUEUE, true, false, false, null);
-			for (int i = 0; i < 1; i++) {
-				String mm = "{ \"operacao\": \"PAGAMENTO\", \"pedido\": \"A1\", \"valor\": 1002, \"tipo\": \"CREDITO\" }";
-				channel.basicPublish("", QUEUE, null, mm.getBytes("UTF-8"));
-				System.out.println("Enviada para fila: " + QUEUE + " Enviada !'" + mm + "'");
-			}
-			channel.close();
-			conn.close();
-		} catch (IOException | TimeoutException | ConfigurationException e) {
-			mApp.addToChat("[Server]: Error, cannot distribute this message.", Application.ATTR_ERROR);
-		}
-	}
-
-	private void onReceiveMessage(String consumerTag, Delivery delivery) {
-		Message message = SerializationUtils.deserialize(delivery.getBody());
-		mApp.addToChat("(" + message.getTime() + ") ", Application.ATTR_BOLD);
-		mApp.addToChat(message.getName() + ": ", Application.ATTR_BOLD);
-		mApp.addToChat(message.getContent(), Application.ATTR_PLAIN);
-	}
-
-	private void onReceiveConnection(String consumerTag, Delivery delivery) {
-		Connection connection = SerializationUtils.deserialize(delivery.getBody());
-	}
+ 
 
 	public boolean isConnected() {
 		return mIsConnected;
@@ -162,7 +156,7 @@ public class Client {
 		try {
 			mConnection.close();
 		} catch (IOException e) {
-			System.err.println("Error: when closing rabbitMQ connection" + e);
+			System.err.println("Erro ao fechar o RMQ!" + e);
 		}
 	}
 }

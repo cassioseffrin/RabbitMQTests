@@ -11,7 +11,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class Sender {
+public class Pagamento {
 
 	public static void main(String[] argv) throws Exception {
 		try {
@@ -19,12 +19,12 @@ public class Sender {
 			PropertiesConfiguration config = new PropertiesConfiguration();
 			config.load("application.properties");
 
-			String HOST = config.getString("HOST");
-			String USER = config.getString("USER");
-			String PASS = config.getString("PASS");
-//			String QUEUE = config.getString("QUEUE_P2");
-			String QUEUE = config.getString("QUEUE_L300");
-			Integer PORT = config.getInt("PORT");
+			String HOST = config.getString("HOST_AWS");
+			String USER = config.getString("USER_AWS");
+			String PASS = config.getString("PASS_AWS");
+			String QUEUE = config.getString("QUEUE_P2");
+//			String QUEUE = config.getString("QUEUE_L300");
+			Integer PORT = config.getInt("PORT_AWS");
 
 			factory.setHost(HOST);
 			factory.setUsername(USER);
@@ -38,7 +38,7 @@ public class Sender {
 			channel.queueDeclare(QUEUE, true, false, false, null);
 
 			for (int i = 0; i < 1; i++) {
-				String message = "{ \"operacao\": \"PAGAMENTO\", \"pedido\": \"A1\", \"valor\": 1102, \"tipo\": \"CREDITO\" }";
+				String message = "{ \"operacao\": \"PAGAMENTO\", \"pedido\": \"A1\", \"valor\": 1211, \"tipo\": \"CREDITO\" }";
 				channel.basicPublish("", QUEUE, null, message.getBytes("UTF-8"));
 				System.out.println("Enviada para fila: " + QUEUE + " Enviada !'" + message + "'");
 			}

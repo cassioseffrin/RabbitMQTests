@@ -15,8 +15,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeoutException;
 
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -77,8 +75,6 @@ public class Arpag {
 	private BufferedImage mIcon;
 	private JFrame mFrame;
 	private JTextPane mChatArea;
-	private DefaultListModel<String> mUserList;
-
 	public Arpag(Client client) {
 		loadTextStyles();
 		setDialogs();
@@ -106,10 +102,10 @@ public class Arpag {
 	}
 
 	private void createFrame() {
-		mFrame = new JFrame("Arpag teste para Homologacao");
+		mFrame = new JFrame("Arpag | Teste para homologação Banrisul/Vero!");
 		Container container = mFrame.getContentPane();
 		container.setLayout(new BorderLayout());
-		container.add(getRightPanel(), BorderLayout.CENTER);
+		container.add(getPainelCentral(), BorderLayout.CENTER);
 
 		mFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
@@ -129,15 +125,13 @@ public class Arpag {
 		mFrame.setVisible(true);
 	}
 
-	private JPanel getRightPanel() {
-
+	private JPanel getPainelCentral() {
 		GridBagConstraints constraints1 = new GridBagConstraints();
 		constraints1.weightx = 1;
 		constraints1.weighty = 1;
 		constraints1.gridx = 0;
 		constraints1.gridy = 0;
 		constraints1.fill = GridBagConstraints.BOTH;
-
 		GridBagConstraints constraints2 = new GridBagConstraints();
 		constraints2.weightx = 1;
 		constraints2.weighty = 0;
@@ -145,7 +139,6 @@ public class Arpag {
 		constraints2.gridy = 1;
 		constraints2.fill = GridBagConstraints.HORIZONTAL;
 		constraints2.anchor = GridBagConstraints.PAGE_END;
-
 		GridBagConstraints constraints3 = new GridBagConstraints();
 		constraints3.weightx = 1;
 		constraints3.weighty = 0;
@@ -153,28 +146,68 @@ public class Arpag {
 		constraints3.gridy = 2;
 		constraints3.fill = GridBagConstraints.HORIZONTAL;
 		constraints3.anchor = GridBagConstraints.PAGE_END;
+		JPanel painelCentral = new JPanel(new GridBagLayout());
+		painelCentral.add(getPainelMensagens(), constraints1);
+		painelCentral.add(getPainelPedido(), constraints2);
+		painelCentral.add(getPainelEstorno(), constraints3);
 
-		JPanel rightPanel = new JPanel(new GridBagLayout());
-		rightPanel.add(getMessagesPanel(), constraints1);
-		rightPanel.add(getInputPanel(), constraints2);
-		rightPanel.add(getInputEstorno(), constraints3);
-
-		return rightPanel;
+		return painelCentral;
 	}
 
-	private JPanel getMessagesPanel() {
+	private JPanel getPainelMensagens() {		
+		String serial =  PropertiesManager.getProperty("SERIAL" );
+
 		mChatArea = new JTextPane();
-		mChatArea.setMargin(new Insets(20, 20, 20, 20));
+		mChatArea.setMargin(new Insets(0, 0, 0, 0));
 		mChatArea.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
 		mChatArea.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(mChatArea);
+
 		JPanel panel = new JPanel(new BorderLayout());
-		panel.setBorder(new EmptyBorder(40, 20, 40, 40));
+		panel.setBorder(new EmptyBorder(0, 0, 0, 0));
+
+		JLabel labelSerial = new JLabel();
+		labelSerial.setText("Deve ser a CNPJ(somente números): Serial, ex: 03477600000104:PBG5233679630");
+
+		PHTextField tfSerial = new PHTextField();
+		tfSerial.setText(serial);
+		tfSerial.setPlaceholder("Serial:CNPJ");
+		tfSerial.setMargin(new Insets(10, 10, 10, 10));
+		tfSerial.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
+
+		JPanel inputPanel = new JPanel();
+		inputPanel.setLayout(new BorderLayout());
+		inputPanel.add(labelSerial, BorderLayout.NORTH);
+		inputPanel.add(tfSerial, BorderLayout.CENTER);
+
+		JButton gravarButton = new JButton("Gravar");
+		gravarButton.addActionListener(onGravarCfgClick(tfSerial));
+
+		inputPanel.add(gravarButton, BorderLayout.EAST);
+
+		panel.add(inputPanel, BorderLayout.NORTH);
 		panel.add(scrollPane, BorderLayout.CENTER);
+
 		return panel;
 	}
 
-	private JPanel getInputPanel() {
+	private ActionListener onGravarCfgClick(JTextField textField) {
+		return e -> {
+			try {
+				if (textField.getText().length() == 0) {
+					JOptionPane.showMessageDialog(textField, "Serial Invalido. ex:  03477600000104:4AD74FS9I", FONT,
+							JOptionPane.CANCEL_OPTION);
+					return;
+				}
+				PropertiesManager.storeProperty("SERIAL", textField.getText());
+
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		};
+	}
+
+	private JPanel getPainelPedido() {
 
 		PHTextField tfpedido = new PHTextField();
 		tfpedido.setPlaceholder("Pedido");
@@ -187,11 +220,11 @@ public class Arpag {
 		tfValorPedido.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
 
 		JButton button = new JButton("Cobrar");
-		button.setFont(new Font(FONT, Font.BOLD, (int) convertFontSizeForWindows(18D)));
+
 		button.addActionListener(onCobrarClick(tfValorPedido, tfpedido));
 
 		JLabel labelValor = new JLabel();
-		labelValor.setText("Ex Pedido: A2304   -   Ex Valor:  2800 para R$ 28,00");
+		labelValor.setText("Ex Pedido: A2304  |  Ex Valor:  2800 para R$ 28,00");
 
 		GridBagConstraints constLabel = new GridBagConstraints();
 		constLabel.weightx = 1;
@@ -231,12 +264,10 @@ public class Arpag {
 		return panel;
 	}
 
-	private JPanel getInputEstorno() {
+	private JPanel getPainelEstorno() {
 		PHTextField tfEstornoNSU = new PHTextField();
-		tfEstornoNSU.setToolTipText("NSU do estorno");
-
 		tfEstornoNSU.setPlaceholder("NSU do estorno");
-		tfEstornoNSU.setMargin(new Insets(20, 20, 20, 20));
+		tfEstornoNSU.setMargin(new Insets(10, 10, 10, 10));
 		tfEstornoNSU.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
 		tfEstornoNSU.addActionListener(onSendEstorno(tfEstornoNSU));
 
@@ -251,7 +282,7 @@ public class Arpag {
 		constLabelNSU.fill = GridBagConstraints.HORIZONTAL;
 
 		JButton button = new JButton("Estornar");
-		button.setFont(new Font(FONT, Font.BOLD, (int) convertFontSizeForWindows(18D)));
+
 		button.addActionListener(onSendEstorno(tfEstornoNSU));
 		GridBagConstraints constraints1 = new GridBagConstraints();
 		constraints1.weightx = 1;
@@ -298,7 +329,10 @@ public class Arpag {
 				String HOST = config.getString("HOST");
 				String USER = config.getString("USER");
 				String PASS = config.getString("PASS");
-				String QUEUE = config.getString("QUEUE_P2_POS");
+//				String QUEUE = config.getString("QUEUE_P2_POS");
+//				String QUEUE = config.getString("QUEUE_L300_POS");
+				String serial =  PropertiesManager.getProperty("SERIAL" );
+				String QUEUE = serial + ":POS";
 				Integer PORT = config.getInt("PORT");
 				factory.setHost(HOST);
 				factory.setUsername(USER);
@@ -329,16 +363,13 @@ public class Arpag {
 	}
 
 	private ActionListener onSendEstorno(JTextField textField) {
-
 		return e -> {
 			try {
-
 				if (textField.getText().length() == 0) {
-					JOptionPane.showMessageDialog(textField, "Por favor informe nsu valido. ex: 2023090400001591", FONT,
+					JOptionPane.showMessageDialog(textField, "Por favor informe NSU valido. ex: 2023090400001591", FONT,
 							JOptionPane.CANCEL_OPTION);
 					return;
 				}
-
 				ConnectionFactory factory = new ConnectionFactory();
 				PropertiesConfiguration config = new PropertiesConfiguration();
 				config.load("application.properties");
@@ -372,7 +403,7 @@ public class Arpag {
 		};
 	}
 
-	public void addToChat(String message, SimpleAttributeSet attributes) {
+	public void addToMessages(String message, SimpleAttributeSet attributes) {
 		Document doc = mChatArea.getDocument();
 		if (attributes == ATTR_ERROR || attributes == ATTR_SERVER) {
 			message = "***** MENSAGEM \n" + message + "\n***** FIM MENSAGEM\n";
@@ -386,19 +417,7 @@ public class Arpag {
 		mChatArea.setCaretPosition(doc.getLength());
 	}
 
-	public void addToUsersList(String name) {
-		if (!mUserList.contains(name)) {
-			mUserList.addElement(name);
-		}
-	}
-
-	public void removeFromUserList(String name) {
-		mUserList.removeElement(name);
-	}
-
-	public void clearUsersList() {
-		mUserList.clear();
-	}
+ 
 
 	public double convertFontSizeForWindows(double fontSize) {
 		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
@@ -409,5 +428,4 @@ public class Arpag {
 		return fontSize;
 	}
 
- 
 }

@@ -15,7 +15,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeoutException;
 
-import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,10 +39,10 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class Application {
+public class Arpag {
 	public static void main(String[] args) {
 		Client client = new Client(parseArgs(args));
-		SwingUtilities.invokeLater(() -> new Application(client));
+		SwingUtilities.invokeLater(() -> new Arpag(client));
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			if (client.isConnected()) {
 				client.disconnect();
@@ -80,9 +79,8 @@ public class Application {
 	private JTextPane mChatArea;
 	private DefaultListModel<String> mUserList;
 
-	public Application(Client client) {
+	public Arpag(Client client) {
 		loadTextStyles();
-		loadAssets();
 		setDialogs();
 		createFrame();
 		mClient = client;
@@ -91,28 +89,20 @@ public class Application {
 
 	private void loadTextStyles() {
 		StyleConstants.setBold(ATTR_BOLD, true);
-		StyleConstants.setFontSize(ATTR_BOLD, (int) convertFontSizeForWindows(25D));
+		StyleConstants.setFontSize(ATTR_BOLD, (int) convertFontSizeForWindows(18D));
 		StyleConstants.setItalic(ATTR_ITALIC, true);
-		StyleConstants.setFontSize(ATTR_ITALIC, (int) convertFontSizeForWindows(25D));
+		StyleConstants.setFontSize(ATTR_ITALIC, (int) convertFontSizeForWindows(18D));
 		StyleConstants.setBold(ATTR_ERROR, true);
 		StyleConstants.setForeground(ATTR_ERROR, Color.red);
-		StyleConstants.setFontSize(ATTR_ERROR, (int) convertFontSizeForWindows(25D));
+		StyleConstants.setFontSize(ATTR_ERROR, (int) convertFontSizeForWindows(18D));
 		StyleConstants.setBold(ATTR_SERVER, true);
-		StyleConstants.setFontSize(ATTR_SERVER, (int) convertFontSizeForWindows(25D));
-	}
-
-	private void loadAssets() {
-		try {
-			mIcon = ImageIO.read(getClass().getResource("/launcher.png"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		StyleConstants.setFontSize(ATTR_SERVER, (int) convertFontSizeForWindows(18D));
 	}
 
 	private void setDialogs() {
-		UIManager.put("OptionPane.messageFont", new Font(FONT, Font.BOLD, (int) convertFontSizeForWindows(30D)));
-		UIManager.put("OptionPane.buttonFont", new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(25D)));
-		UIManager.put("TextField.font", new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(25D)));
+		UIManager.put("OptionPane.messageFont", new Font(FONT, Font.BOLD, (int) convertFontSizeForWindows(20D)));
+		UIManager.put("OptionPane.buttonFont", new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
+		UIManager.put("TextField.font", new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
 	}
 
 	private void createFrame() {
@@ -175,7 +165,7 @@ public class Application {
 	private JPanel getMessagesPanel() {
 		mChatArea = new JTextPane();
 		mChatArea.setMargin(new Insets(20, 20, 20, 20));
-		mChatArea.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(25D)));
+		mChatArea.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
 		mChatArea.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(mChatArea);
 		JPanel panel = new JPanel(new BorderLayout());
@@ -189,19 +179,19 @@ public class Application {
 		PHTextField tfpedido = new PHTextField();
 		tfpedido.setPlaceholder("Pedido");
 		tfpedido.setMargin(new Insets(10, 10, 10, 10));
-		tfpedido.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(25D)));
+		tfpedido.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
 
 		PHTextField tfValorPedido = new PHTextField();
 		tfValorPedido.setPlaceholder("Valor");
 		tfValorPedido.setMargin(new Insets(10, 10, 10, 10));
-		tfValorPedido.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(25D)));
+		tfValorPedido.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
 
 		JButton button = new JButton("Cobrar");
-		button.setFont(new Font(FONT, Font.BOLD, (int) convertFontSizeForWindows(25D)));
+		button.setFont(new Font(FONT, Font.BOLD, (int) convertFontSizeForWindows(18D)));
 		button.addActionListener(onCobrarClick(tfValorPedido, tfpedido));
 
 		JLabel labelValor = new JLabel();
-		labelValor.setText("Ex: Pedido: A2304   -   Ex Valor:  2800 para R$ 28,00");
+		labelValor.setText("Ex Pedido: A2304   -   Ex Valor:  2800 para R$ 28,00");
 
 		GridBagConstraints constLabel = new GridBagConstraints();
 		constLabel.weightx = 1;
@@ -247,7 +237,7 @@ public class Application {
 
 		tfEstornoNSU.setPlaceholder("NSU do estorno");
 		tfEstornoNSU.setMargin(new Insets(20, 20, 20, 20));
-		tfEstornoNSU.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(25D)));
+		tfEstornoNSU.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
 		tfEstornoNSU.addActionListener(onSendEstorno(tfEstornoNSU));
 
 		JLabel labelNSU = new JLabel();
@@ -261,7 +251,7 @@ public class Application {
 		constLabelNSU.fill = GridBagConstraints.HORIZONTAL;
 
 		JButton button = new JButton("Estornar");
-		button.setFont(new Font(FONT, Font.BOLD, (int) convertFontSizeForWindows(25D)));
+		button.setFont(new Font(FONT, Font.BOLD, (int) convertFontSizeForWindows(18D)));
 		button.addActionListener(onSendEstorno(tfEstornoNSU));
 		GridBagConstraints constraints1 = new GridBagConstraints();
 		constraints1.weightx = 1;
@@ -419,13 +409,5 @@ public class Application {
 		return fontSize;
 	}
 
-	public ImageIcon convertIconWindows() {
-		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-			double screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-			double testedWidth = 1500D;
-			return new ImageIcon(mIcon.getScaledInstance((int) (180 * (screenWidth / testedWidth)),
-					(int) (180 * (screenWidth / testedWidth)), java.awt.Image.SCALE_SMOOTH));
-		}
-		return new ImageIcon(mIcon);
-	}
+ 
 }

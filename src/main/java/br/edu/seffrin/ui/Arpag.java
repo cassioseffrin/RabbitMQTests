@@ -75,6 +75,7 @@ public class Arpag {
 	private BufferedImage mIcon;
 	private JFrame mFrame;
 	private JTextPane mChatArea;
+
 	public Arpag(Client client) {
 		loadTextStyles();
 		setDialogs();
@@ -154,8 +155,8 @@ public class Arpag {
 		return painelCentral;
 	}
 
-	private JPanel getPainelMensagens() {		
-		String serial =  PropertiesManager.getProperty("SERIAL" );
+	private JPanel getPainelMensagens() {
+		String serial = PropertiesManager.getProperty("SERIAL");
 
 		mChatArea = new JTextPane();
 		mChatArea.setMargin(new Insets(0, 0, 0, 0));
@@ -331,7 +332,7 @@ public class Arpag {
 				String PASS = config.getString("PASS");
 //				String QUEUE = config.getString("QUEUE_P2_POS");
 //				String QUEUE = config.getString("QUEUE_L300_POS");
-				String serial =  PropertiesManager.getProperty("SERIAL" );
+				String serial = PropertiesManager.getProperty("SERIAL");
 				String QUEUE = serial + ":POS";
 				Integer PORT = config.getInt("PORT");
 				factory.setHost(HOST);
@@ -348,13 +349,13 @@ public class Arpag {
 				channel.queueDeclare(QUEUE, true, false, false, null);
 				String valor = textField.getText();
 				String pedido = tfpedido.getText();
-				for (int i = 0; i < 1; i++) {
-					String mm = String.format(
-							"{ \"operacao\": \"PAGAMENTO\", \"pedido\": \"%s\", \"valor\": %s, \"tipo\": \"CREDITO\"}",
-							pedido, valor);
-					channel.basicPublish("", QUEUE, null, mm.getBytes("UTF-8"));
-					System.out.println("Enviada para fila: " + QUEUE + " Enviada !'" + mm + "'");
-				}
+
+				String mm = String.format(
+						"{ \"operacao\": \"PAGAMENTO\", \"pedido\": \"%s\", \"valor\": %s, \"tipo\": \"CREDITO\"}",
+						pedido, valor);
+				channel.basicPublish("", QUEUE, null, mm.getBytes("UTF-8"));
+				System.out.println("Enviada para fila: " + QUEUE + " Enviada !'" + mm + "'");
+
 				channel.close();
 				conn.close();
 			} catch (IOException | TimeoutException | ConfigurationException e2) {
@@ -416,8 +417,6 @@ public class Arpag {
 		}
 		mChatArea.setCaretPosition(doc.getLength());
 	}
-
- 
 
 	public double convertFontSizeForWindows(double fontSize) {
 		if (System.getProperty("os.name").toLowerCase().contains("windows")) {

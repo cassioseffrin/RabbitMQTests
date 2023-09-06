@@ -22,7 +22,7 @@ public class Pagamento {
 			String HOST = config.getString("HOST_AWS");
 			String USER = config.getString("USER_AWS");
 			String PASS = config.getString("PASS_AWS");
-			String QUEUE = config.getString("QUEUE_P2");
+			String QUEUE = config.getString("QUEUE_P2_PDV");
 //			String QUEUE = config.getString("QUEUE_L300");
 			Integer PORT = config.getInt("PORT_AWS");
 

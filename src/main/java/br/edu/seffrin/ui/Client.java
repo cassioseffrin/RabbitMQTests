@@ -17,10 +17,8 @@ public class Client {
 
 	private com.rabbitmq.client.Connection mConnection;
 	private boolean mIsConnected;
- 
-	private Arpag mApp;
 
- 
+	private Arpag mApp;
 
 	public Client(String host) {
 		initCommunication();
@@ -38,7 +36,7 @@ public class Client {
 			String USER = config.getString("USER_AWS");
 			String PASS = config.getString("PASS_AWS");
 //			String QUEUE = config.getString("QUEUE_P2_PDV");
-			String serial =  PropertiesManager.getProperty("SERIAL" );
+			String serial = PropertiesManager.getProperty("SERIAL");
 //			String QUEUE = config.getString("QUEUE_P2_PDV");
 			String QUEUE = serial + ":PDV";
 			Integer PORT = config.getInt("PORT_AWS");
@@ -72,10 +70,10 @@ public class Client {
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 		} catch (KeyManagementException e) {
- 
+
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
- 
+
 			e.printStackTrace();
 		}
 	}
@@ -135,18 +133,14 @@ public class Client {
 		} catch (Exception e) {
 			mApp.addToMessages(
 					"[Servidor]: Erro, não é possível desconectar você completamente.\n"
-					+ "Seu nome de usuário pode ficar indisponível até que o servidor seja reiniciado.\n"
-					+ "Se o aplicativo parecer não estar funcionando corretamente, por favor\n"
-					+ "reinicie-o.",
+							+ "Seu nome de usuário pode ficar indisponível até que o servidor seja reiniciado.\n"
+							+ "Se o aplicativo parecer não estar funcionando corretamente, por favor\n" + "reinicie-o.",
 					Arpag.ATTR_ERROR);
 			return;
 		}
 //		mApp.clearUsersList();
 		mApp.addToMessages("[Server]: Desconectado.", Arpag.ATTR_SERVER);
 	}
- 
-
- 
 
 	public boolean isConnected() {
 		return mIsConnected;

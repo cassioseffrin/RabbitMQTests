@@ -1,4 +1,5 @@
 br/edu/seffrin/senderReceiver/Pagamento.class
+br/edu/seffrin/senderReceiver/PagamentoPIX.class
 br/edu/seffrin/pubSub/ReceiveLogs.class
 br/edu/seffrin/ui/Connection.class
 br/edu/seffrin/senderReceiver/Reciever.class

@@ -221,9 +221,10 @@ public class Arpag {
 		tfValorPedido.setFont(new Font(FONT, Font.PLAIN, (int) convertFontSizeForWindows(18D)));
 
 		JButton button = new JButton("Cobrar");
+		JButton buttonPix = new JButton("PIX");
 
-		button.addActionListener(onCobrarClick(tfValorPedido, tfpedido));
-
+		button.addActionListener(onCobrarClick(tfValorPedido, tfpedido, "PAGAMENTO"));
+		buttonPix.addActionListener(onCobrarClick(tfValorPedido, tfpedido, "PIX"));
 		JLabel labelValor = new JLabel();
 		labelValor.setText("Ex Pedido: A2304  |  Ex Valor:  2800 para R$ 28,00");
 
@@ -261,7 +262,7 @@ public class Arpag {
 		panel.add(tfpedido, constraints1);
 		panel.add(tfValorPedido, constraints2);
 		panel.add(button, constraints3);
-
+		panel.add(buttonPix, constraints3);
 		return panel;
 	}
 
@@ -307,7 +308,7 @@ public class Arpag {
 		return panel;
 	}
 
-	private ActionListener onCobrarClick(JTextField textField, JTextField tfpedido) {
+	private ActionListener onCobrarClick(JTextField textField, JTextField tfpedido, String tipo) {
 
 		return e -> {
 			try {
@@ -351,8 +352,8 @@ public class Arpag {
 				String pedido = tfpedido.getText();
 
 				String mm = String.format(
-						"{ \"operacao\": \"PAGAMENTO\", \"pedido\": \"%s\", \"valor\": %s, \"tipo\": \"CREDITO\"}",
-						pedido, valor);
+						"{ \"operacao\": \"%s\", \"pedido\": \"%s\", \"valor\": %s, \"tipo\": \"CREDITO\"}",
+					tipo, pedido, valor);
 				channel.basicPublish("", QUEUE, null, mm.getBytes("UTF-8"));
 				System.out.println("Enviada para fila: " + QUEUE + " Enviada !'" + mm + "'");
 
@@ -362,6 +363,9 @@ public class Arpag {
 			}
 		};
 	}
+	
+	
+	
 
 	private ActionListener onSendEstorno(JTextField textField) {
 		return e -> {

@@ -80,51 +80,7 @@ public class Client {
 
 	public void bindWithGUI(Arpag app) {
 		mApp = app;
-	}
-
-//	public boolean connect(String name) {
-//		mApp.addToMessages("[Server]: Initiating your connection...", Arpag.ATTR_SERVER);
-//
-//		try {
-//			BlockingQueue<Object> response = connectRPC(name);
-//
-//			boolean isConnected = (boolean) response.take();
-//			@SuppressWarnings("unchecked")
-//			ArrayList<Message> messageHistory = (ArrayList<Message>) response.take();
-//			@SuppressWarnings("unchecked")
-//			ArrayList<String> connectedClients = (ArrayList<String>) response.take();
-//
-//			System.out.println(connectedClients);
-//
-//			if (!isConnected) {
-//	 
-//				return false;
-//			} else {
-//	 
-//		 
-//				mIsConnected = true;
-//	 
-//				connectedClients.forEach(client -> mApp.addToUsersList(client));
-//	 
-//				messageHistory.forEach(message -> {
-//					mApp.addToMessages("(" + message.getTime() + ") ", Arpag.ATTR_BOLD);
-//					mApp.addToMessages(message.getName() + ": ", Arpag.ATTR_BOLD);
-//					mApp.addToMessages(message.getContent(), Arpag.ATTR_PLAIN);
-//				});
-//			}
-//		} catch (Exception e) {
-//			mApp.addToMessages("[Servidor]: Erro ao conectar",
-//					Arpag.ATTR_ERROR);
-//			return false;
-//		}
-//
-//
-//		return true;
-//	}
-
-//	private BlockingQueue<Object> connectRPC(String name) throws IOException {
-//		return null;
-//	}
+	} 
 
 	public void disconnect() {
 		mApp.addToMessages("[Servidor]: desconectando...", Arpag.ATTR_SERVER);
@@ -138,7 +94,6 @@ public class Client {
 					Arpag.ATTR_ERROR);
 			return;
 		}
-//		mApp.clearUsersList();
 		mApp.addToMessages("[Server]: Desconectado.", Arpag.ATTR_SERVER);
 	}
 

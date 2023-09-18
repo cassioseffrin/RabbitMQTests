@@ -168,7 +168,7 @@ public class Arpag {
 		panel.setBorder(new EmptyBorder(0, 0, 0, 0));
 
 		JLabel labelSerial = new JLabel();
-		labelSerial.setText("Deve ser a CNPJ(somente números): Serial, ex: 03477600000104:PBG5233679630");
+		labelSerial.setText("Deve ser a CNPJ(somente números): Serial, ex: 03600000104:PBG5233679630");
 
 		PHTextField tfSerial = new PHTextField();
 		tfSerial.setText(serial);
@@ -196,7 +196,7 @@ public class Arpag {
 		return e -> {
 			try {
 				if (textField.getText().length() == 0) {
-					JOptionPane.showMessageDialog(textField, "Serial Invalido. ex:  03477600000104:4AD74FS9I", FONT,
+					JOptionPane.showMessageDialog(textField, "Serial Invalido. ex:  03600477000104:4AD74FS9I", FONT,
 							JOptionPane.CANCEL_OPTION);
 					return;
 				}

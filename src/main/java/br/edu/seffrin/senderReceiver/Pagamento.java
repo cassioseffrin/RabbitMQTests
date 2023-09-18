@@ -22,8 +22,8 @@ public class Pagamento {
 			String HOST = config.getString("HOST_AWS");
 			String USER = config.getString("USER_AWS");
 			String PASS = config.getString("PASS_AWS");
-			String QUEUE = config.getString("QUEUE_P2_POS");
-//			String QUEUE = config.getString("QUEUE_L300_POS");
+			String QUEUE = config.getString("QUEUE_P2_POS"); //03600477000104:PBG5233679630:POS
+//			String QUEUE = config.getString("QUEUE_L300_POS"); //03600477000104:4AD74FS9I:POS
 			Integer PORT = config.getInt("PORT_AWS");
 
 			factory.setHost(HOST);
@@ -36,12 +36,10 @@ public class Pagamento {
 			Channel channel = conn.createChannel();
 
 			channel.queueDeclare(QUEUE, true, false, false, null);
-
-			for (int i = 0; i < 1; i++) {
-				String message = "{ \"operacao\": \"PAGAMENTO\", \"pedido\": \"A1\", \"valor\": 1211, \"tipo\": \"CREDITO\" }";
+				String message = "{ \"operacao\": \"PAGAMENTO\", \"pedido\": \"A1\", \"valor\": 88888, \"tipo\": \"CREDITO\" }";
 				channel.basicPublish("", QUEUE, null, message.getBytes("UTF-8"));
 				System.out.println("Enviada para fila: " + QUEUE + " Enviada !'" + message + "'");
-			}
+	 
 			channel.close();
 			conn.close();
 		} catch (IOException | TimeoutException e) {

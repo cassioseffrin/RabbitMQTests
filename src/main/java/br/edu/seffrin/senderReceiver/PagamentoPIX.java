@@ -38,7 +38,7 @@ public class PagamentoPIX {
 			channel.queueDeclare(QUEUE, true, false, false, null);
 
 			for (int i = 0; i < 1; i++) {
-				String message = "{ \"operacao\": \"PIX\", \"pedido\": \"A1\", \"valor\": 1211, \"tipo\": \"CREDITO\" }";
+				String message = "{ \"operacao\": \"PIX\", \"pedido\": \"A1\", \"valor\": 88778, \"tipo\": \"CREDITO\" }";
 				channel.basicPublish("", QUEUE, null, message.getBytes("UTF-8"));
 				System.out.println("Enviada para fila: " + QUEUE + " Enviada !'" + message + "'");
 			}

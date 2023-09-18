@@ -62,7 +62,7 @@
                                         <archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>br.edu.seffrin.ui.Arpag</mainClass>
+							<mainClass>br.edu.seffrin.ui.Main</mainClass>
 						</manifest>
 					</archive>
                 </configuration>

@@ -37,10 +37,10 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class Arpag {
+public class Main {
 	public static void main(String[] args) {
 		Client client = new Client(parseArgs(args));
-		SwingUtilities.invokeLater(() -> new Arpag(client));
+		SwingUtilities.invokeLater(() -> new Main(client));
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			if (client.isConnected()) {
 				client.disconnect();
@@ -76,7 +76,7 @@ public class Arpag {
 	private JFrame mFrame;
 	private JTextPane mChatArea;
 
-	public Arpag(Client client) {
+	public Main(Client client) {
 		loadTextStyles();
 		setDialogs();
 		createFrame();

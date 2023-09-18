@@ -18,7 +18,7 @@ public class Client {
 	private com.rabbitmq.client.Connection mConnection;
 	private boolean mIsConnected;
 
-	private Arpag mApp;
+	private Main mApp;
 
 	public Client(String host) {
 		initCommunication();
@@ -57,7 +57,7 @@ public class Client {
 
 				System.out.println(" [x]  " + QUEUE + " Recebida '" + message + "'");
 
-				mApp.addToMessages(message, Arpag.ATTR_PLAIN);
+				mApp.addToMessages(message, Main.ATTR_PLAIN);
 
 			};
 
@@ -78,12 +78,12 @@ public class Client {
 		}
 	}
 
-	public void bindWithGUI(Arpag app) {
+	public void bindWithGUI(Main app) {
 		mApp = app;
 	} 
 
 	public void disconnect() {
-		mApp.addToMessages("[Servidor]: desconectando...", Arpag.ATTR_SERVER);
+		mApp.addToMessages("[Servidor]: desconectando...", Main.ATTR_SERVER);
 		try {
 			mIsConnected = false;
 		} catch (Exception e) {
@@ -91,10 +91,10 @@ public class Client {
 					"[Servidor]: Erro, não é possível desconectar você completamente.\n"
 							+ "Seu nome de usuário pode ficar indisponível até que o servidor seja reiniciado.\n"
 							+ "Se o aplicativo parecer não estar funcionando corretamente, por favor\n" + "reinicie-o.",
-					Arpag.ATTR_ERROR);
+					Main.ATTR_ERROR);
 			return;
 		}
-		mApp.addToMessages("[Server]: Desconectado.", Arpag.ATTR_SERVER);
+		mApp.addToMessages("[Server]: Desconectado.", Main.ATTR_SERVER);
 	}
 
 	public boolean isConnected() {

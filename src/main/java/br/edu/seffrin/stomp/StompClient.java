@@ -46,10 +46,6 @@ public class StompClient {
 
 			SocketFactory factory = SSLSocketFactory.getDefault();
 
-//            Socket socket = factory.createSocket(hostAndPort[0], Integer.parseInt(hostAndPort[1]));
-//            b-d3844232-2ec2-4c49-87aa-256e9f878632-1.mq.sa-east-1.amazonaws.com:61614
-//            b-d3844232-2ec2-4c49-87aa-256e9f878632-2.mq.sa-east-1.amazonaws.com   
-
 			Socket socket = factory.createSocket(url, 61614);
 			connection.open(socket);
 			connection.connect(user, password, name);

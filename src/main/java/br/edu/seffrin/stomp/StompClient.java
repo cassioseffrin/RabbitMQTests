@@ -5,6 +5,7 @@ import java.net.SocketTimeoutException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 import javax.net.SocketFactory;
@@ -50,53 +51,63 @@ public class StompClient {
 			connection.open(socket);
 			connection.connect(user, password, name);
 			System.out.println(String.format("Successfully connected to %s", cmd.getOptionValue("url")));
-
-			sendMessages(connection, "topico ou fila", "aqui vai o json", name, interval, count);
-//            if (cmd.getOptionValue("mode").contentEquals("sender")) {
-//                sendMessages(connection, cmd.getOptionValue("type"), cmd.getOptionValue("destination"), name, interval, count);
-//            } else {
-//                receiveMessages(connection, cmd.getOptionValue("type"), cmd.getOptionValue("destination"));
-//            }
+			//sendMessages(connection,   "{\"valor\":10600,\"pedido\":\"B621F871|85423\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"tipo\":\"PIX\", \"operacao\":\"PAGAMENTO\"}", name, interval, count);
+		
+			
+//			sendMessages(connection, "{ \"operacao\": \"PAGAMENTO\", \"queue\":\"10513613000186:B621F871:PAGAMENTO\", \"pedido\": \"B621F871|85423\", \"valor\": 8734, \"tipo\": \"CREDITO\" }", name, interval, count);
+			sendMessages(connection, "{\"valor\":1630,\"pedido\":\"B621F871|1696002627\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"operacao\":\"DEBITO\"}", name, interval, count);
+			  
 		} catch (javax.jms.JMSSecurityException ex) {
 			System.out.println(String.format("Error: %s", ex.getMessage()));
 			System.exit(1);
 		}
 	}
 
-	private static void sendMessages(StompConnection connection, String type, String destination, String name,
+	private static void sendMessages(StompConnection connection,  String message, String name,
 			int interval, WrapInt count) throws Exception {
-		while (true) {
+//		while (true) {
 			count.v++;
-
-			connection.begin("tx1");
-			String message = String.format("[%s://%s] [%s] Message number %s", type, destination, name, count.v);
-			connection.send(String.format("/%s/%s", type, destination), message, "tx1", null);
-			connection.commit("tx1");
-
-			if (interval > 0) {
-				System.out.println(String.format("%s - Sender: sent '%s'", df.format(new Date()), message));
-				try {
-					Thread.sleep(interval);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+			connection.begin("transaction");
+//			connection.send("10513613000186:4AD74FS9I:PAGAMENTO", message, "transaction", null);
+			
+			
+			
+			HashMap<String, String> headers = new HashMap<String, String>();
+	
+			
+//			headers.put( "content-length",  new Integer(message.length()).toString() );
+			headers.put( "content-type",  "text/plain" );
+			
+			
+//			connection.send("10513613000186:PBG5233679630:PAGAMENTO", message, "transaction", headers);
+			connection.send("10513613000186:B621F871:RECEBIMENTO", message, "transaction", headers);
+			
+			connection.commit("transaction");
+			System.out.println(String.format("%s - enviado! '%s'", df.format(new Date()), message));
+//			if (interval > 0) {
+//				System.out.println(String.format("%s - enviado! '%s'", df.format(new Date()), message));
+//				try {
+//					Thread.sleep(interval);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
 	}
 
-	private static void receiveMessages(StompConnection connection, String type, String destination) throws Exception {
-		connection.subscribe(String.format("/%s/%s", type, destination), Subscribe.AckModeValues.AUTO);
-
-		while (true) {
-			try {
-				StompFrame message = connection.receive(60000);
-				System.out.println(
-						String.format("%s - Receiver: received '%s'", df.format(new Date()), message.getBody()));
-			} catch (SocketTimeoutException e) {
-				// ignore
-			}
-		}
-	}
+//	private static void receiveMessages(StompConnection connection, String type, String destination) throws Exception {
+//		connection.subscribe(String.format("/%s/%s", type, destination), Subscribe.AckModeValues.AUTO);
+//
+//		while (true) {
+//			try {
+//				StompFrame message = connection.receive(60000);
+//				System.out.println(
+//						String.format("%s - Receiver: received '%s'", df.format(new Date()), message.getBody()));
+//			} catch (SocketTimeoutException e) {
+//				// ignore
+//			}
+//		}
+//	}
 
 	private static CommandLine parseAndValidateCommandLineArguments(String[] args) throws ParseException {
 		Options options = new Options();

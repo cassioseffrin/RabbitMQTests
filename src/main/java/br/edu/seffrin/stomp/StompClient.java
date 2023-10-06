@@ -41,7 +41,14 @@ public class StompClient {
 
 		try {
 			StompConnection connection = new StompConnection();
-			String url = "b-d3844232-2ec2-4c49-87aa-256e9f878632-2.mq.sa-east-1.amazonaws.com";
+//			String url = "b-d3844232-2ec2-4c49-87aa-256e9f878632-2.mq.sa-east-1.amazonaws.com";
+//			String url = "b-83aea7ca-f7bc-4d1c-9a09-976c24906430-1.mq.sa-east-1.amazonaws.com";
+			
+			String url = "mq1.arpasistemas.com.br";
+			
+			
+				
+			
 			String user = "arpag";
 			String password = "@rpa@pps2022";
 			SocketFactory factory = SSLSocketFactory.getDefault();
@@ -51,7 +58,7 @@ public class StompClient {
 			System.out.println(String.format("Successfully connected to %s", cmd.getOptionValue("url")));
 			//sendMessages(connection,   "{\"valor\":10600,\"pedido\":\"B621F871|85423\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"tipo\":\"PIX\", \"operacao\":\"PAGAMENTO\"}", name, interval, count);	
 			//sendMessages(connection, "{ \"operacao\": \"PAGAMENTO\", \"queue\":\"10513613000186:B621F871:PAGAMENTO\", \"pedido\": \"B621F871|85423\", \"valor\": 8734, \"tipo\": \"CREDITO\" }", name, interval, count);
-			sendMessages(connection, "{\"valor\":1224,\"pedido\":\"B621F871|1696002627\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"operacao\":\"DEBITO\"}", name, interval, count);
+			sendMessages(connection, "{\"valor\":1114,\"pedido\":\"B621F871|1696002627\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"operacao\":\"DEBITO\"}", name, interval, count);
 			  
 		} catch (javax.jms.JMSSecurityException ex) {
 			System.out.println(String.format("Error: %s", ex.getMessage()));
@@ -69,13 +76,12 @@ public class StompClient {
 			headers.put( "content-type",  "text/plain" );
 			
 //			String queue= "10513613000186:PBG5233679630:PAGAMENTO";
-			String queue= "queue/10513613000186:4AD74FS9I:PAGAMENTO";
-			
-			
-			
+			String queue= "10513613000186:4AD74FS9I:PAGAMENTO";
+//			String queue= "queue/10513613000186:4AD74FS9I:PAGAMENTO";
 			connection.send(queue, message, "transaction", headers);
 //			connection.send("10513613000186:B621F871:RECEBIMENTO", message, "transaction", headers);
 			connection.commit("transaction");
+			connection.close();
 			System.out.println(String.format("%s - enviado para fila %s  - mensagem: '%s'", df.format(new Date()),queue, message));
 //			if (interval > 0) {
 //				System.out.println(String.format("%s - enviado! '%s'", df.format(new Date()), message));

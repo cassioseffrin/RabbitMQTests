@@ -8,7 +8,7 @@ public class JMSClient {
 
 //    	String tcpBrokerURL = "tcp://b-d3844232-2ec2-4c49-87aa-256e9f878632-2.mq.sa-east-1.amazonaws.com:61614";		
 //		String SSLbrokerURL = "ssl://b-d3844232-2ec2-4c49-87aa-256e9f878632-2.mq.sa-east-1.amazonaws.com:61617";
-		String failOverBrokerURL = "failover:(ssl://b-d3844232-2ec2-4c49-87aa-256e9f878632-1.mq.sa-east-1.amazonaws.com:61617,ssl://b-d3844232-2ec2-4c49-87aa-256e9f878632-2.mq.sa-east-1.amazonaws.com:61617)";
+		String failOverBrokerURL = "ssl://b-83aea7ca-f7bc-4d1c-9a09-976c24906430-1.mq.sa-east-1.amazonaws.com:61617";
  
  
 		
@@ -20,7 +20,7 @@ public class JMSClient {
 			connection.start();
 
 			Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
-			Destination destination = session.createQueue("queue/10513613000186:4AD74FS9I:PAGAMENTO");
+			Destination destination = session.createQueue("JMS-10513613000186:4AD74FS9I:PAGAMENTO");
 			MessageProducer producer = session.createProducer(destination);
 
 			TextMessage message1 = session.createTextMessage(

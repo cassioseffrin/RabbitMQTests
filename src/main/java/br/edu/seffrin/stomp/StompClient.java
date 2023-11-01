@@ -7,13 +7,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
-
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.apache.activemq.transport.stomp.Stomp.Headers.Subscribe;
+import org.apache.activemq.transport.stomp.Stomp;
 import org.apache.activemq.transport.stomp.StompConnection;
-import org.apache.activemq.transport.stomp.StompFrame;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -32,8 +31,20 @@ class WrapInt {
 public class StompClient {
 
 	private static final DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
+	
+ 
 
 	public static void main(String[] args) throws Exception {
+		
+		
+		
+		
+		
+		
+ 
+		
+		
+		
 		CommandLine cmd = parseAndValidateCommandLineArguments(args);
 		final WrapInt count = new WrapInt();
 		final int interval = Integer.parseInt(cmd.getOptionValue("interval", "1000"));
@@ -41,24 +52,28 @@ public class StompClient {
 
 		try {
 			StompConnection connection = new StompConnection();
-//			String url = "b-d3844232-2ec2-4c49-87aa-256e9f878632-2.mq.sa-east-1.amazonaws.com";
-//			String url = "b-83aea7ca-f7bc-4d1c-9a09-976c24906430-1.mq.sa-east-1.amazonaws.com";
-			
-			String url = "mq1.arpasistemas.com.br";
-			
-			
-				
-			
+			String url = "b-83aea7ca-f7bc-4d1c-9a09-976c24906430-1.mq.sa-east-1.amazonaws.com";
+//			String url = "mq1.arpasistemas.com.br";
 			String user = "arpag";
 			String password = "@rpa@pps2022";
 			SocketFactory factory = SSLSocketFactory.getDefault();
+
+		
+//			connection.open(url, 61613);			
+//			connection.connect(user, password);
+	
+			
 			Socket socket = factory.createSocket(url, 61614);
 			connection.open(socket);
 			connection.connect(user, password, name);
+//			connection.connect(user, password);
+			connection.keepAlive();
 			System.out.println(String.format("Successfully connected to %s", cmd.getOptionValue("url")));
-			//sendMessages(connection,   "{\"valor\":10600,\"pedido\":\"B621F871|85423\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"tipo\":\"PIX\", \"operacao\":\"PAGAMENTO\"}", name, interval, count);	
-			//sendMessages(connection, "{ \"operacao\": \"PAGAMENTO\", \"queue\":\"10513613000186:B621F871:PAGAMENTO\", \"pedido\": \"B621F871|85423\", \"valor\": 8734, \"tipo\": \"CREDITO\" }", name, interval, count);
-			sendMessages(connection, "{\"valor\":1114,\"pedido\":\"B621F871|1696002627\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"operacao\":\"DEBITO\"}", name, interval, count);
+//			sendMessages(connection,   "{\"valor\":10600,\"pedido\":\"B621F871|85423\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"tipo\":\"DEBITO\", \"operacao\":\"DEBITO\"}", name, interval, count);	
+//			sendMessages(connection, "{ \"operacao\": \"DEBITO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\", \"pedido\": \"B621F871|85423\", \"valor\": 1151 , \"tipo\": \"CREDITO\" }", name, interval, count);
+//			sendMessages(connection, "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"REGISTRO_SUCESSO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}", name, interval, count);		
+//			sendMessages(connection, "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"BLOQUEAR_DISPOSITIVO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}", name, interval, count);
+//			sendMessageEstorno(connection, "{ \"operacao\": \"ESTORNO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\",  \"pedido\": \"Asdf1\", \"nsu\": \"2023101700002384\"  }", name, interval, count);
 			  
 		} catch (javax.jms.JMSSecurityException ex) {
 			System.out.println(String.format("Error: %s", ex.getMessage()));
@@ -75,9 +90,29 @@ public class StompClient {
 			headers.put( "content-length",  new Integer(message.length()).toString() );
 			headers.put( "content-type",  "text/plain" );
 			
+			
+			//CIELO
+//			String queue= "03600477000104:4AC23TJ0J:PAGAMENTO";
+			
+			
+			//POSITIVO
+//			String queue= "01541336000124:4AD74FS9I:PAGAMENTO";
+			
+//			String queue= "07465257000168:4AD74FS9I:PAGAMENTO";
+			
+			
+			String queue= "03600477000104:null:PAGAMENTO";
+			
+			
+			//P2
+//			String queue= "03600477000104:PBG5233679630:PAGAMENTO";
 //			String queue= "10513613000186:PBG5233679630:PAGAMENTO";
-			String queue= "10513613000186:4AD74FS9I:PAGAMENTO";
+			
+//			String queue= "10513613000186:4AD74FS9I:PAGAMENTO";
+//			String queue= "10513613000186:EMULATOR32X1X14X0:PAGAMENTO";
+//			String queue= "03600477000104:4AD74FS9I:PAGAMENTO";
 //			String queue= "queue/10513613000186:4AD74FS9I:PAGAMENTO";
+//			String queue="07465257000168:PBG5233679630:PAGAMENTO";
 			connection.send(queue, message, "transaction", headers);
 //			connection.send("10513613000186:B621F871:RECEBIMENTO", message, "transaction", headers);
 			connection.commit("transaction");
@@ -94,6 +129,35 @@ public class StompClient {
 //		}
 	}
 
+	
+	
+	private static void sendMessageEstorno(StompConnection connection,  String message, String name, int interval, WrapInt count) throws Exception {
+//		while (true) {
+			count.v++;
+			connection.begin("transaction");
+//			connection.send("10513613000186:4AD74FS9I:PAGAMENTO", message, "transaction", null);
+			HashMap<String, String> headers = new HashMap<String, String>();
+			headers.put( "content-length",  new Integer(message.length()).toString() );
+			headers.put( "content-type",  "text/plain" );
+//			String queue= "10513613000186:PBG5233679630:PAGAMENTO";
+			String queue= "10513613000186:4AD74FS9I:PAGAMENTO";
+			connection.send(queue, message, "transaction", headers);
+//			connection.send("10513613000186:B621F871:RECEBIMENTO", message, "transaction", headers);
+			connection.commit("transaction");
+			connection.close();
+			System.out.println(String.format("%s - enviado para fila %s  - mensagem: '%s'", df.format(new Date()),queue, message));
+//			if (interval > 0) {
+//				System.out.println(String.format("%s - enviado! '%s'", df.format(new Date()), message));
+//				try {
+//					Thread.sleep(interval);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+	}
+	
+	
 //	private static void receiveMessages(StompConnection connection, String type, String destination) throws Exception {
 //		connection.subscribe(String.format("/%s/%s", type, destination), Subscribe.AckModeValues.AUTO);
 //

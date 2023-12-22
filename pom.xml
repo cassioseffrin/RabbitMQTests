@@ -6,11 +6,7 @@
 	<artifactId>MensageiroMQ</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
-<dependency>
-    <groupId>com.rabbitmq</groupId>
-    <artifactId>amqp-client</artifactId>
-    <version>5.9.0</version>
-</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -67,6 +63,15 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.4</version>
 		</dependency>
+		
+		
+				<!-- https://mvnrepository.com/artifact/com.rabbitmq/amqp-client -->
+		<dependency>
+		    <groupId>com.rabbitmq</groupId>
+		    <artifactId>amqp-client</artifactId>
+		    <version>5.20.0</version>
+		</dependency>
+
 <!-- mqtt client-->
 <dependency>
   <groupId>org.eclipse.paho</groupId>

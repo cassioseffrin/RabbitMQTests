@@ -10,17 +10,18 @@ public class Pagamento2 {
 		ConnectionFactory factory = new ConnectionFactory();
 
 
-		factory.useSslProtocol();
+
 
 		String USER = "arpag";
-		String PASS = "@rpa@pps2022";
+		String PASS = "po$p@g2244#$up3rvis%";
 		String QUEUE = "03600477000104:4AD74FS9I:PAGAMENTO";
 		factory.setUsername(USER);
 		factory.setPassword(PASS);
 		
-		factory.setHost("b-83aea7ca-f7bc-4d1c-9a09-976c24906430-1.mq.sa-east-1.amazonaws.com");
-		factory.setPort(5671);
+		factory.setHost("18.228.222.107");
+		factory.setPort(61613);
 
+//		factory.useSslProtocol();
 		// Tells the library to setup the default Key and Trust managers for you
 		// which do not do any form of remote server trust verification
 
@@ -29,15 +30,10 @@ public class Pagamento2 {
 		
 		
 		byte[] messageBodyBytes = "Hello, world!".getBytes();
-//		channel.basicPublish(exchangeName, routingKey,
-//		             new AMQP.BasicProperties.Builder()
-//		               .contentType("text/plain")
-//		               .userId("userId")
-//		               .build(),
-//		               messageBodyBytes);
+ 
 		
 
-//		// non-durable, exclusive, auto-delete queue
+ 
 		channel.queueDeclare("rabbitmq-java-test", false, true, true, null);
 		channel.basicPublish("", QUEUE, null, messageBodyBytes);
 //
@@ -49,8 +45,8 @@ public class Pagamento2 {
 //			System.out.println("Received: " + new String(body));
 //		}
 //
-//		channel.close();
-//		conn.close();
+		channel.close();
+		conn.close();
 	}
 	
 	

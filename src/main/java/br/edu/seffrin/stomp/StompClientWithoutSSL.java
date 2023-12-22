@@ -26,13 +26,8 @@ import com.amazonaws.services.simplesystemsmanagement.model.GetParameterResult;
 
  
 public class StompClientWithoutSSL {
-
 	private static final DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
-	
- 
-
 	public static void main(String[] args) throws Exception {
-
 		
 		CommandLine cmd = parseAndValidateCommandLineArguments(args);
 		final WrapInt count = new WrapInt();
@@ -41,23 +36,73 @@ public class StompClientWithoutSSL {
 
 		try {
 			StompConnection connection = new StompConnection();
-			String url = "192.168.50.19";
- 
-			String user = "arpag";
-			String password = "arpa2010";
 			
- 
+			String url = "mq1.arpasistemas.com.br";
+//			String url = "18.228.222.107";
+			String user = "arpag";
+			String password = "po$p@g2244#$up3rvis%";
 			connection.open(url, 61613);			
 			connection.connect(user, password);
+
+			
+			
+//			
+//			String url = "192.168.50.19";
+//			String user = "arpag";
+//			String password = "arpa2010";
+//			connection.open(url, 61613);			
+//			connection.connect(user, password);
+			
+			
+
+			//CIELO
+//			String queue= "03600477000104:4AC23TJ0J:PAGAMENTO";
+// 			String queue= "10513613000186:4AC23TJ0J:PAGAMENTO";
+//			String queue= "10513613000186:4AC23TJ0J:PAGAMENTO";
+			
+			
+//			EMULADOR EMULATOR32X1X14X0
+//			String queue= "03600477000104:EMULATOR32X1X14X0:PAGAMENTO";
+//			String queue= "03600477000104:null:PAGAMENTO";
+//			String queue= "10513613000186:EMULATOR32X1X14X0:PAGAMENTO";
+ 			
+ 			
+			
+			//POSITIVO
+//			String queue= "01541336000124:4AD74FS9I:PAGAMENTO";
+			String queue= "07465257000168:4AD74FS9I:PAGAMENTO";
+//			String queue= "03600477000104:4AD74FS9I:PAGAMENTO";
+//			String queue= "10513613000186:4AD74FS9I:PAGAMENTO";	
+//			String queue= "03600477000104:4AD74FS9I:PAGAMENTO";
+
+ 
+			
+
+			
+//			String queue= "03600477000104:null:PAGAMENTO";
+//			String queue= "10513613000186:null:PAGAMENTO";
+//			String queue= "10513613000186:EMULATOR32X1X14X0:PAGAMENTO";
+			
+			
+			//P2
+//			String queue= "10513613000186:PBG5233679630:PAGAMENTO";
+//			String queue= "03600477000104:PBG5233679630:PAGAMENTO";
+//			String queue= "03600477000104:PBG5233679630:PAGAMENTO";
+			
+//			G7
+//			String queue = "03600477000104:null:PAGAMENTO";
+
 			
  
+
 			connection.keepAlive();
-			System.out.println(String.format("Successfully connected to %s", cmd.getOptionValue("url")));
-			sendMessages(connection,   "{\"valor\":10600,\"pedido\":\"B621F871|85423\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"tipo\":\"DEBITO\", \"operacao\":\"DEBITO\"}", name, interval, count);	
-//			sendMessages(connection, "{ \"operacao\": \"DEBITO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\", \"pedido\": \"B621F871|85423\", \"valor\": 1151 , \"tipo\": \"CREDITO\" }", name, interval, count);
-//			sendMessages(connection, "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"REGISTRO_SUCESSO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}", name, interval, count);		
-//			sendMessages(connection, "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"BLOQUEAR_DISPOSITIVO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}", name, interval, count);
-//			sendMessageEstorno(connection, "{ \"operacao\": \"ESTORNO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\",  \"pedido\": \"Asdf1\", \"nsu\": \"2023101700002384\"  }", name, interval, count);
+			
+//				(connection, "teste TTL6", queue, interval, count);
+//			sendMessages(connection,   "{\"valor\":1060,\"pedido\":\"B621F871|85423\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"tipo\":\"DEBITO\", \"operacao\":\"DEBITO\"}", queue, interval, count);	
+			sendMessages(connection, "{ \"operacao\": \"DEBITO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\", \"pedido\": \"B621F871|85423\", \"valor\": 101 , \"tipo\": \"CREDITO\" }", queue, interval, count);
+//			sendMessages(connection, "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"REGISTRO_SUCESSO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}", queue, interval, count);		
+//			sendMessages(connection, "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"BLOQUEAR_DISPOSITIVO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}", queue, interval, count);
+//			sendMessageEstorno(connection, "{ \"operacao\": \"ESTORNO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\",  \"pedido\": \"Asdf1\", \"nsu\": \"2023101700002384\"  }", queue, interval, count);
 			  
 		} catch (javax.jms.JMSSecurityException ex) {
 			System.out.println(String.format("Error: %s", ex.getMessage()));
@@ -65,37 +110,24 @@ public class StompClientWithoutSSL {
 		}
 	}
 
-	private static void sendMessages(StompConnection connection,  String message, String name, int interval, WrapInt count) throws Exception {
+	private static void sendMessages(StompConnection connection,  String message, String queue, int interval, WrapInt count) throws Exception {
 //		while (true) {
 			count.v++;
 			connection.begin("transaction");
+			System.out.println(String.format("Successfully connected to %s", queue));
 //			connection.send("10513613000186:4AD74FS9I:PAGAMENTO", message, "transaction", null);
 			HashMap<String, String> headers = new HashMap<String, String>();
 			headers.put( "content-length",  new Integer(message.length()).toString() );
 			headers.put( "content-type",  "text/plain" );
+		
 			
 			
-			//CIELO
-//			String queue= "03600477000104:4AC23TJ0J:PAGAMENTO";
+			// PELO QUE OBSERVEI SO FUNCIONA COM AMQ. STOMP EH STRING E NAO ASSUME
+			//https://www.rabbitmq.com/consumers.html#active-consumer
+//			headers.put("x-single-active-consumer", "true");
+			//https://www.rabbitmq.com/consumer-priority.html
+//			headers.put("x-priority", "10");
 			
-			
-			//POSITIVO
-//			String queue= "01541336000124:4AD74FS9I:PAGAMENTO";
-			
-//			String queue= "07465257000168:4AD74FS9I:PAGAMENTO";
-			
-			
-			String queue= "03600477000104:null:PAGAMENTO";
-			
-			
-			//P2
-//			String queue= "03600477000104:PBG5233679630:PAGAMENTO";
-//			String queue= "10513613000186:PBG5233679630:PAGAMENTO";
-			
-//			String queue= "10513613000186:4AD74FS9I:PAGAMENTO";
-//			String queue= "10513613000186:EMULATOR32X1X14X0:PAGAMENTO";
-//			String queue= "03600477000104:4AD74FS9I:PAGAMENTO";
-//			String queue= "queue/10513613000186:4AD74FS9I:PAGAMENTO";
 //			String queue="07465257000168:PBG5233679630:PAGAMENTO";
 			connection.send(queue, message, "transaction", headers);
 //			connection.send("10513613000186:B621F871:RECEBIMENTO", message, "transaction", headers);
@@ -115,7 +147,7 @@ public class StompClientWithoutSSL {
 
 	
 	
-	private static void sendMessageEstorno(StompConnection connection,  String message, String name, int interval, WrapInt count) throws Exception {
+	private static void sendMessageEstorno(StompConnection connection,  String message, String queue, int interval, WrapInt count) throws Exception {
 //		while (true) {
 			count.v++;
 			connection.begin("transaction");
@@ -123,8 +155,7 @@ public class StompClientWithoutSSL {
 			HashMap<String, String> headers = new HashMap<String, String>();
 			headers.put( "content-length",  new Integer(message.length()).toString() );
 			headers.put( "content-type",  "text/plain" );
-//			String queue= "10513613000186:PBG5233679630:PAGAMENTO";
-			String queue= "10513613000186:4AD74FS9I:PAGAMENTO";
+ 
 			connection.send(queue, message, "transaction", headers);
 //			connection.send("10513613000186:B621F871:RECEBIMENTO", message, "transaction", headers);
 			connection.commit("transaction");

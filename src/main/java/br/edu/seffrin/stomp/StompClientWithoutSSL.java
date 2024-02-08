@@ -1,16 +1,12 @@
 package br.edu.seffrin.stomp;
 
-import java.net.Socket;
-import java.net.SocketTimeoutException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
-import javax.net.SocketFactory;
-import javax.net.ssl.SSLSocketFactory;
 
-import org.apache.activemq.transport.stomp.Stomp;
 import org.apache.activemq.transport.stomp.StompConnection;
 
 import org.apache.commons.cli.CommandLine;
@@ -38,7 +34,7 @@ public class StompClientWithoutSSL {
 			StompConnection connection = new StompConnection();
 			
 			String url = "mq1.arpasistemas.com.br";
-//			String url = "18.228.222.107";
+
 			String user = "arpag";
 			String password = "po$p@g2244#$up3rvis%";
 			connection.open(url, 61613);			

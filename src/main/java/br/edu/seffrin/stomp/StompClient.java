@@ -52,24 +52,24 @@ public class StompClient {
 
 		try {
 			StompConnection connection = new StompConnection();
-			String url = "b-83aea7ca-f7bc-4d1c-9a09-976c24906430-1.mq.sa-east-1.amazonaws.com";
-//			String url = "mq1.arpasistemas.com.br";
-			String user = "arpag";
+//			String url = "b-83aea7ca-f7bc-4d1c-9a09-976c24906430-1.mq.sa-east-1.amazonaws.com";
+			String url = "mq1.arpasistemas.com.br";
+			String user = "admin";
 			String password = "@rpa@pps2022";
 			SocketFactory factory = SSLSocketFactory.getDefault();
 
 		
-//			connection.open(url, 61613);			
-//			connection.connect(user, password);
+			connection.open(url, 61613);			
+			connection.connect(user, password);
 	
 			
-			Socket socket = factory.createSocket(url, 61614);
-			connection.open(socket);
-			connection.connect(user, password, name);
+//			Socket socket = factory.createSocket(url, 61614);
+//			connection.open(socket);
+//			connection.connect(user, password, name);
 //			connection.connect(user, password);
 			connection.keepAlive();
 			System.out.println(String.format("Successfully connected to %s", cmd.getOptionValue("url")));
-//			sendMessages(connection,   "{\"valor\":10600,\"pedido\":\"B621F871|85423\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"tipo\":\"DEBITO\", \"operacao\":\"DEBITO\"}", name, interval, count);	
+			sendMessages(connection,   "{\"valor\":10600,\"pedido\":\"B621F871|85423\",\"queue\":\"10513613000186:B621F871:RECEBIMENTO\",\"parcelas\":1,\"tipo\":\"DEBITO\", \"operacao\":\"DEBITO\"}", name, interval, count);	
 //			sendMessages(connection, "{ \"operacao\": \"DEBITO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\", \"pedido\": \"B621F871|85423\", \"valor\": 1151 , \"tipo\": \"CREDITO\" }", name, interval, count);
 //			sendMessages(connection, "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"REGISTRO_SUCESSO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}", name, interval, count);		
 //			sendMessages(connection, "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"BLOQUEAR_DISPOSITIVO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}", name, interval, count);
@@ -88,6 +88,7 @@ public class StompClient {
 //			connection.send("10513613000186:4AD74FS9I:PAGAMENTO", message, "transaction", null);
 			HashMap<String, String> headers = new HashMap<String, String>();
 			headers.put( "content-length",  new Integer(message.length()).toString() );
+            headers.put("x-single-active-consumer", "true");
 			headers.put( "content-type",  "text/plain" );
 			
 			
@@ -101,7 +102,9 @@ public class StompClient {
 //			String queue= "07465257000168:4AD74FS9I:PAGAMENTO";
 			
 			
-			String queue= "03600477000104:null:PAGAMENTO";
+//			String queue= "03600477000104:null:PAGAMENTO";
+			
+			String queue = "10513613000186:PBG5233679630:PAGAMENTO";
 			
 			
 			//P2

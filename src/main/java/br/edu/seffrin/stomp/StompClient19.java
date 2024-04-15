@@ -1,49 +1,25 @@
 package br.edu.seffrin.stomp;
 
-import java.net.Socket;
-import java.net.SocketTimeoutException;
+import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
+import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
+import com.amazonaws.services.simplesystemsmanagement.model.GetParameterResult;
+import org.apache.activemq.transport.stomp.StompConnection;
+import org.apache.commons.cli.*;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
-import javax.net.SocketFactory;
-import javax.net.ssl.SSLSocketFactory;
 
-import org.apache.activemq.transport.stomp.Stomp;
-import org.apache.activemq.transport.stomp.StompConnection;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterResult;
-
-class WrapInt {
-	public int v = 0;
-}
-
-public class StompClient {
+public class StompClient19 {
 
 	private static final DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
-	
- 
 
 	public static void main(String[] args) throws Exception {
-		
-		
-		
-		
-		
-		
- 
-		
-		
+
 		
 		CommandLine cmd = parseAndValidateCommandLineArguments(args);
 		final WrapInt count = new WrapInt();
@@ -53,12 +29,16 @@ public class StompClient {
 		try {
 			StompConnection connection = new StompConnection();
 //			String url = "b-83aea7ca-f7bc-4d1c-9a09-976c24906430-1.mq.sa-east-1.amazonaws.com";
-			String url = "mq1.arpasistemas.com.br";
+			String url = "192.168.50.19";
 			String user = "arpag";
 			String password = "po$p@g2244#$up3rvis%";
 			SocketFactory factory = SSLSocketFactory.getDefault();
-			connection.open(url, 61613);			
+
+		
+			connection.open(url, 61613);
 			connection.connect(user, password);
+	
+			
 //			Socket socket = factory.createSocket(url, 61614);
 //			connection.open(socket);
 //			connection.connect(user, password, name);
@@ -83,7 +63,7 @@ public class StompClient {
 			connection.begin("transaction");
 //			connection.send("10513613000186:4AD74FS9I:PAGAMENTO", message, "transaction", null);
 			HashMap<String, String> headers = new HashMap<String, String>();
-			headers.put( "content-length",  new Integer(message.length()).toString() );
+
             headers.put("x-single-active-consumer", "true");
 			headers.put( "content-type",  "text/plain" );
 			
@@ -99,8 +79,8 @@ public class StompClient {
 			
 			
 //			String queue= "03600477000104:null:PAGAMENTO";
-
-		String queue = "10513613000186:0fa3d0bc7dbf2678:PAGAMENTO";
+			
+			String queue = "10513613000186:0fa3d0bc7dbf2678:PAGAMENTO";
 			
 			
 			//P2

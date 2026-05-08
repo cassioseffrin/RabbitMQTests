@@ -1,6 +1,8 @@
 package br.edu.seffrin.amq;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -15,9 +17,15 @@ import com.rabbitmq.client.Envelope;
 public class AMQPSendReceive {
     // CIELO
     //	String QUEUE = "03600477000104:4AC23TJ0J:PAGAMENTO";
-//    	String QUEUE = "07465257000168:4AC23TJ0J:PAGAMENTO";
     //	String QUEUE = "10513613000186:4AC23TJ0J:PAGAMENTO";
 //    String QUEUE = "07465257000168:EMULATOR32X1X14X0:PAGAMENTO";
+//    String QUEUE = "07465257000168:4f952e9742bfadb7:PAGAMENTO";
+//    String QUEUE = "07465257000168:4f952e9742bfadb7:PAGAMENTO";
+//    	String QUEUE = "07465257000168:4AC23TJ0J:PAGAMENTO";
+//    String QUEUE = "07465257000168:EMULATOR35X2X10X0:PAGAMENTO";  //API 25 EMULADOR  1.6.3
+//    String QUEUE = "07465257000168:475307a0d35e925a:PAGAMENTO"; // API 30 NAO FUNCIONA
+//    String QUEUE = "07465257000168:7295ad65b6560d96:PAGAMENTO"; // API 29 ok EMULADOR 1.6.4
+
 
     //	EMULADOR EMULATOR32X1X14X0
 //    	String QUEUE = "03600477000104:EMULATOR32X1X14X0:PAGAMENTO";
@@ -53,6 +61,7 @@ public class AMQPSendReceive {
     //	String QUEUE = "10513613000186:0fa3d0bc7dbf2678:PAGAMENTO";
     //	String QUEUE = "24779520000102:5ecc0696d5b2bd15:PAGAMENTO";
 //    String QUEUE = "19496110000114:5ecc0696d5b2bd15:PAGAMENTO";
+//    String QUEUE = "07465257000168:771092205a3ef7f9:PAGAMENTO";
 
     // GETNET
 //     String QUEUE = "10513613000186:PBF923CE70038:PAGAMENTO";
@@ -66,6 +75,7 @@ public class AMQPSendReceive {
 //    String QUEUE = "07465257000168:PBA1238674580:PAGAMENTO";//    String QUEUE = "10513613000186:PBA1238674580:PAGAMENTO";
 //    String QUEUE = "05061462000132:PBA1238674580:PAGAMENTO";
  //   String QUEUE = "08806797000120:EMULATOR32X1X14X0:PAGAMENTO";
+//    String QUEUE = "07465257000168:PB3S249D70046:PAGAMENTO";
 
     //REDE
 //        String QUEUE = "07465257000168:f0f70be3ccda9214:PAGAMENTO";
@@ -73,17 +83,20 @@ public class AMQPSendReceive {
 
 //    FISERV
 //    release
-    String QUEUE = "07465257000168:754c977e0b28a046:PAGAMENTO";
+
+//    String QUEUE = "07465257000168:754c977e0b28a046:PAGAMENTO";
+//    String QUEUE = "19496110000114:754c977e0b28a046:PAGAMENTO";
 //    String QUEUE = "04962772000165:754c977e0b28a046:PAGAMENTO";
 //    debug
 //    String QUEUE = "07465257000168:ecc9ce625281a636:PAGAMENTO";
-//    String QUEUE = "04962772000165:ecc9ce625281a636:PAGAMENTO";
+//    String QUEUE = "07465257000168:680f823e888a9c5b:PAGAMENTO";
+    String QUEUE = "07056528000121:PBA1238674580:PAGAMENTO";
 
-    private final static String EXCHANGE_NAME = "03600477000104:EMULATOR32X1X14X0:PAGAMENTO";
-    private final static String HOST_NAME = "mq2.arpasistemas.com.br";
+    private final static String EXCHANGE_NAME = "exchangeRegistrarSmartPosHomologacao";
+    private final static String HOST_NAME = "mq1.arpasistemas.com.br";
     private final static String USER_NAME = "arpag";
     private final static String PASSWORD = "po$p@g2244#$up3rvis%";
-    private final static Integer PORT = 5672;
+    private final static Integer PORT = 5671;
 //    private final static Integer PORT = 80;
 //    private final static Integer PORT = 443;
 
@@ -96,7 +109,7 @@ public class AMQPSendReceive {
         //factory.setRequestedFrameMax(67108864);
         Connection connection = null;
         try {
-//            factory.useSslProtocol();
+            factory.useSslProtocol();
             connection = factory.newConnection();
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,11 +126,22 @@ public class AMQPSendReceive {
                 try {
                     connection = connect();
                     channel = connection.createChannel();
-                    channel.queueDeclare(QUEUE, true, false, false, null);
-//                    String message = "{\"modalidade\": \"CREDITO\",  \"operacao\": \"CREDITO\", \"queue\":\"10513613000186000186:XXXXXXXX:RECEBIMENTO\", \"pedido\": \"CONTROL1234\", \"valor\": 1080, \"orderId\": \"23423234dsfasdf\",  \"tipo\": \"CREDITO\" }";
-//					String message = "{\"modalidade\": \"DEBITO\",  \"operacao\": \"DEBITO\", \"queue\":\"07465257000168:B621F871:RECEBIMENTO\", \"pedido\": \"CONTROL1234\", \"valor\": 12100, \"orderId\": \"23423234dsfasdf\",    \"tipo\": \"DEBITO\" }";
-//					String message = "{ \"modalidade\": \"PIX\", \"operacao\": \"PIX\", \"queue\":\"    07465257000168:B621F871:RECEBIMENTO\", \"pedido\": \"B621F871|85423\", \"valor\": 800 , \"tipo\": \"PIX\" }";
-                    String message = "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"REGISTRO_SUCESSO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}";
+
+
+
+                    Map<String, Object> argsMap = new HashMap<>();
+                    argsMap.put("x-single-active-consumer", true);
+
+                    channel.queueDeclare(QUEUE, true, false, false, argsMap);
+
+                    String message = "{ \"identificacao\": \"qa ingrid\", \"razao\": \"teste ingrif\", \"dispositivo\": \"PBG5233679630\", \"cnpj\": \"07056528000121\", \"versao\": \"99.25.0.0\", \"adquirente\": \"VERO\", \"cnpjAdquirente\": \"92.934.215/0001-06\", \"modeloPOS\": \"sunmi-p2-b\" }  ";
+
+
+//                    channel.queueDeclare(QUEUE, true, false, false, null);
+//                    String message = "{\"modalidade\": \"CREDITO\",  \"operacao\": \"CREDITO\", \"queue\":\"10513613000186000186:XXXXXXXX:RECEBIMENTO\", \"pedido\": \"CONTROL1234\", \"valor\": 1010, \"orderId\": \"23423234dsfasdf\",  \"tipo\": \"CREDITO\" }";
+//					String message = "{\"modalidade\": \"DEBITO\",  \"operacao\": \"DEBITO\", \"queue\":\"07465257000168:B621F871:RECEBIMENTO\", \"pedido\": \"CONTROL1234\", \"valor\": 120, \"orderId\": \"23423234dsfasdf\",    \"tipo\": \"DEBITO\" }";
+//					String message = "{ \"modalidade\": \"PIX\", \"operacao\": \"PIX\", \"queue\":\"    07465257000168:B621F871:RECEBIMENTO\", \"pedido\": \"B621F871|85423\", \"valor\": 1 , \"tipo\": \"PIX\" }";
+//                    String message = "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"REGISTRO_SUCESSO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}";
 //					String message = "{\"valor\":0,\"pedido\":\"\",\"queue\":\"\",\"parcelas\":0,\"operacao\":\"BLOQUEAR_DISPOSITIVO\",\"nsu\":\"\",\"serial\":\"U1640A6400002\"}";
 //					String message = "{ \"modalidade\": \"CREDITO\", \"operacao\": \"ESTORNO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\", \"valor\": 119, \"pedido\": \"Asdf1\", \"nsu\": \"46331080665995\"  }" ;
 
@@ -126,8 +150,25 @@ public class AMQPSendReceive {
 //					String message = "{ \"operacao\": \"ESTORNO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\", \"valor\": 103, \"pedido\": \"sdfsdf|85423\", \"nsu\": \"7af65211-ca15-4944-9519-f49831a18735\", \"autorizacao\":\"747ad21d-c4dc-4bcc-8c72-6654e10e9655\", \"orderId\": \"d7600ee5-623e-47d1-b218-ab021eb6e42b\"}" ;
 //					String message = "{ \"operacao\": \"ESTORNO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\", \"valor\": 104, \"pedido\": \"sdfsdf|85423\", \"nsu\": \"132458\", \"autorizacao\":\"969674\", \"orderId\": \"2895f267-1602-417d-b5cb-548467d07757\"}" ;
 //					String message = "{ \"operacao\": \"ESTORNO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\", \"valor\": 105, \"pedido\": \"CONTROL123\", \"nsu\": \"132466\", \"autorizacao\":\"082365\", \"orderId\": \"05a424f9-1b1b-4878-9c4f-fef57975a52b\"}" ;
-//					String message = "{ \"operacao\": \"ESTORNO\", \"queue\":\"10513613000186:B621F871:RECEBIMENTO\", \"valor\": 106, \"pedido\": \"CONTROL1234\", \"nsu\": \"132471\", \"autorizacao\":\"122449\", \"orderId\": \"cea62249-5a8e-4fe4-92da-74bb5e5e3158\"}" ;
+//					String message = "{ \"operacao\": \"ESTORNO\", \"queu   `e\":\"10513613000186:B621F871:RECEBIMENTO\", \"valor\": 106, \"pedido\": \"CONTROL1234\", \"nsu\": \"132471\", \"autorizacao\":\"122449\", \"orderId\": \"cea62249-5a8e-4fe4-92da-74bb5e5e3158\"}" ;
 //					String message = "{ \"operacao\": \"ESTORNO\", \"queue\":\"10513613000186000186:XXXXXXXX:RECEBIMENTO\", \"valor\": 500, \"pedido\": \"asdf2369\", \"nsu\": \"132477\", \"autorizacao\":\"218240\", \"orderId\": \"fe98d759-8915-4a73-b644-489261c91374\"}" ;
+//					String message = "{ \"operacao\": \"ESTORNO\", \"queue\":\"10513613000186000186:XXXXXXXX:RECEBIMENTO\", \"valor\": 101, \"pedido\": \"asdf2369\", \"nsu\": \"2kt13v\", \"autorizacao\":\"is1zyq\", \"orderId\": \"d6c7e928-6652-4dd6-ac8a-d386627babea\"}" ;
+//                   NOVA VERSAO DEEPLINKS
+
+//                    String message = "{\"valor\":100,\"pedido\":\"285C7091|1736767549\",\"queue\":\"07465257000168:285C7091:RECEBIMENTO\",\"parcelas\":0,\"operacao\":\"ESTORNO\",\"nsu\":\"QrKDzJ\",\"serial\":\"\",\"autorizacao\":\"yBEchS\",\"orderId\":\"ea12586f-c5a7-4df3-af83-9e4fbc249082\",\"modalidade\":\"DEBITO\"}" ;
+
+
+
+//                    2025-01-17 09:33:37.805 28380-28380 System.out              br.com.arpasistemas.arpag.cielo      I  orderId: cf48079d-bca6-40f9-8845-0de5274d19fc
+//                    2025-01-17 09:33:37.805 28380-28380 System.out              br.com.arpasistemas.arpag.cielo      I  nsu: EGssv6
+//                    2025-01-17 09:33:37.806 28380-28380 System.out              br.com.arpasistemas.arpag.cielo      I  autoriazacao: bYai2C
+
+
+//                    2025-01-17 10:42:00.397 31355-31355 System.out              br.com.arpasistemas.arpag.cielo      I  orderId: bc03a863-9fa1-42a5-9d7a-5df9f165629a
+//                    2025-01-17 10:42:00.592 31355-31355 System.out              br.com.arpasistemas.arpag.cielo      I  nsu: 62vEFH
+//                    2025-01-17 10:42:00.772 31355-31355 System.out              br.com.arpasistemas.arpag.cielo      I  autoriazacao: 7uaw7d
+
+//                    String message = "{\"valor\":10001,\"orderId\":\"bc03a863-9fa1-42a5-9d7a-5df9f165629a\",\"nsu\":\"62vEFH\", \"autorizacao\":\"7uaw7d\", \"pedido\":\"285C7091|1736767549\",\"queue\":\"07465257000168:285C7091:RECEBIMENTO\",\"parcelas\":0,\"operacao\":\"ESTORNO\",\"serial\":\"\",\"modalidade\":\"DEBITO\"}" ;
 
                     // ESTORNO PAGSEGURO
 //                     String message = "{\"valor\":988,\"pedido\":\"6677436E|1712914842\",\"queue\":\"07465257000168:6677436E:RECEBIMENTO\",\"parcelas\":0,\"operacao\":\"ESTORNO\",\"nsu\":\"041244311548\",\"serial\":\"\",\"autorizacao\":\"111230\",\"orderId\":\"{\\\"transactionCode\\\":\\\"9C90FDCA4D424ABC9727E393432ABD35\\\",\\\"transactionId\\\":\\\"F108A44A3C\\\"}\"}";
